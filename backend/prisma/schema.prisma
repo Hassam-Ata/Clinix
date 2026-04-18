@@ -1,0 +1,86 @@
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+
+  doctor      Doctor?
+  appointments Appointment[] @relation("PatientAppointments")
+}
+
+enum Role {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+model Doctor {
+  id             String @id @default(uuid())
+  userId         String @unique
+
+  user           User   @relation(fields: [userId], references: [id])
+
+  specialization String
+  fees           Float
+  availability   String
+  document       String
+
+  status         DoctorStatus @default(PENDING)
+
+  appointments   Appointment[]
+}
+
+enum DoctorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Appointment {
+  id          String @id @default(uuid())
+
+  patientId   String
+  doctorId    String
+
+  patient     User   @relation("PatientAppointments", fields: [patientId], references: [id])
+  doctor      Doctor @relation(fields: [doctorId], references: [id])
+
+  status      AppointmentStatus @default(PENDING)
+
+  meetingLink String?
+
+  totalFee    Float
+  platformFee Float
+  doctorFee   Float
+
+  stripeSessionId String?
+  isPaid      Boolean @default(false)
+
+  createdAt   DateTime @default(now())
+}
+
+enum AppointmentStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
+model AiLog {
+  id        String @id @default(uuid())
+  input     String
+  output    String
+  createdAt DateTime @default(now())
+}

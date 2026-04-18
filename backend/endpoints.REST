@@ -1,0 +1,84 @@
+### =========================
+### VARIABLES
+### =========================
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+
+### =========================
+### REGISTER PATIENT
+### =========================
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Ali",
+  "email": "ali@test.com",
+  "password": "password123",
+  "role": "PATIENT"
+}
+
+
+### =========================
+### REGISTER DOCTOR
+### =========================
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Dr Ahmed",
+  "email": "doctor@test.com",
+  "password": "123456",
+  "role": "DOCTOR",
+  "specialization": "Cardiologist",
+  "fees": 50,
+  "availability": "9AM-5PM",
+  "document": "doc.pdf"
+}
+
+
+### =========================
+### LOGIN PATIENT
+### =========================
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "ali@test.com",
+  "password": "password123"
+}
+
+
+### =========================
+### LOGIN DOCTOR
+### =========================
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "doctor@test.com",
+  "password": "123456"
+}
+
+
+### =========================
+### INVALID LOGIN TEST
+### =========================
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "ali@test.com",
+  "password": "wrongpassword"
+}
+
+
+### TEST ME
+GET {{baseUrl}}/test/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA0ZDU5YzVlLTBkNzEtNGJlYS1hY2MyLTM1OTQ4MGRmOTQwNSIsInJvbGUiOiJQQVRJRU5UIiwiaWF0IjoxNzc2NTIwODY5LCJleHAiOjE3NzcxMjU2Njl9.gHr5fvXc7JCZ1EJ9xfbEedcOiZMWiM1cARDVcKEmg1U
+
+
+###TEST DOCTOR
+GET {{baseUrl}}/test/doctor-only
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA0ZDU5YzVlLTBkNzEtNGJlYS1hY2MyLTM1OTQ4MGRmOTQwNSIsInJvbGUiOiJQQVRJRU5UIiwiaWF0IjoxNzc2NTIwODY5LCJleHAiOjE3NzcxMjU2Njl9.gHr5fvXc7JCZ1EJ9xfbEedcOiZMWiM1cARDVcKEmg1U
+
