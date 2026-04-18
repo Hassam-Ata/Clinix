@@ -1,0 +1,63 @@
+### =========================
+### VARIABLES
+### =========================
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+@patientToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA0ZDU5YzVlLTBkNzEtNGJlYS1hY2MyLTM1OTQ4MGRmOTQwNSIsInJvbGUiOiJQQVRJRU5UIiwiaWF0IjoxNzc2NTQ3NTg2LCJleHAiOjE3NzcxNTIzODZ9.ZKNoDYZAALn13r8M4oPS4WXkceFqob_0oeUZyvbsLwc
+@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZTYzOTg3LTQ1NjYtNDM2NC1iZjNmLTcxZjVlZjM2YWU5ZiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY1NDc2MjMsImV4cCI6MTc3NzE1MjQyM30.V8LNC2qeR21zts75Gn4ATaENroSksZLtMurr9C2grsI
+
+@doctorId = 0e1c4466-fa7c-4d16-b38c-79990260348b
+@appointmentId = b50016b5-d4ba-4813-aa4c-32720b4f3f01
+
+
+### =========================
+### BOOK APPOINTMENT (PATIENT)
+### =========================
+POST {{baseUrl}}/appointment
+Content-Type: {{contentType}}
+Authorization: Bearer {{patientToken}}
+
+{
+  "doctorId": "{{doctorId}}",
+  "startTime": "2026-04-20T09:00:00.000Z",
+  "endTime": "2026-04-20T09:30:00.000Z"
+}
+
+
+### =========================
+### GET MY APPOINTMENTS (PATIENT)
+### =========================
+GET {{baseUrl}}/appointment/my
+Authorization: Bearer {{patientToken}}
+
+
+### =========================
+### GET DOCTOR APPOINTMENTS
+### =========================
+GET {{baseUrl}}/appointment/doctor
+Authorization: Bearer {{doctorToken}}
+
+
+### =========================
+### ACCEPT APPOINTMENT (DOCTOR)
+### =========================
+PATCH {{baseUrl}}/appointment/{{appointmentId}}/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{doctorToken}}
+
+{
+  "status": "ACCEPTED"
+}
+
+
+### =========================
+### REJECT APPOINTMENT (DOCTOR)
+### =========================
+PATCH {{baseUrl}}/appointment/{{appointmentId}}/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{doctorToken}}
+
+{
+  "status": "REJECTED"
+}

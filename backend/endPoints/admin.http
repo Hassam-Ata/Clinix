@@ -1,0 +1,13 @@
+### =========================
+### VARIABLES
+### =========================
+@baseUrl = http://localhost:3000
+
+@adminToken = <PASTE_ADMIN_TOKEN_HERE>
+
+
+### =========================
+### APPROVE DOCTOR
+### =========================
+PATCH {{baseUrl}}/doctor/approve/0e1c4466-fa7c-4d16-b38c-79990260348b
+Authorization: Bearer {{adminToken}}

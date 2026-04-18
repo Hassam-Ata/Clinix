@@ -1,0 +1,48 @@
+### =========================
+### VARIABLES
+### =========================
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZTYzOTg3LTQ1NjYtNDM2NC1iZjNmLTcxZjVlZjM2YWU5ZiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY1NDM2NTksImV4cCI6MTc3NzE0ODQ1OX0.WdKEu9SNS0EfBseRIDv4R1B0w755GTAONFzq6g2wSkE
+
+
+### =========================
+### GET MY PROFILE
+### =========================
+GET {{baseUrl}}/doctor/me
+Authorization: Bearer {{doctorToken}}
+
+
+### =========================
+### UPDATE MY PROFILE
+### =========================
+PATCH {{baseUrl}}/doctor/me
+Content-Type: {{contentType}}
+Authorization: Bearer {{doctorToken}}
+
+{
+  "specialization": "NEUROLOGIST",
+  "fees": 75,
+  "documentUrl": "https://example.com/updated-license.pdf"
+}
+
+
+### =========================
+### ONBOARD DOCTOR
+### =========================
+POST {{baseUrl}}/doctor/onboard
+Content-Type: {{contentType}}
+Authorization: Bearer {{doctorToken}}
+
+{
+  "specialization": "CARDIOLOGIST",
+  "fees": 50,
+  "documentUrl": "https://example.com/license.pdf"
+}
+
+
+### =========================
+### GET ALL DOCTORS
+### =========================
+GET {{baseUrl}}/doctor/all

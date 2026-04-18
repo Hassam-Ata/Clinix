@@ -1,0 +1,14 @@
+### =========================
+### VARIABLES
+### =========================
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+@patientToken = <PASTE_PATIENT_TOKEN_HERE>
+
+
+### =========================
+### TEST ME
+### =========================
+GET {{baseUrl}}/test/me
+Authorization: Bearer {{patientToken}}

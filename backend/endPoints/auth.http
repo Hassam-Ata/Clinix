@@ -1,0 +1,57 @@
+### =========================
+### VARIABLES
+### =========================
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+
+### =========================
+### REGISTER PATIENT
+### =========================
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Ali",
+  "email": "ali@test.com",
+  "password": "password123",
+  "role": "PATIENT"
+}
+
+
+### =========================
+### LOGIN PATIENT
+### =========================
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "ali@test.com",
+  "password": "password123"
+}
+
+
+### =========================
+### REGISTER DOCTOR
+### =========================
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Dr Ahmed",
+  "email": "doctor@test.com",
+  "password": "123456",
+  "role": "DOCTOR"
+}
+
+
+### =========================
+### LOGIN DOCTOR
+### =========================
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "doctor@test.com",
+  "password": "123456"
+}

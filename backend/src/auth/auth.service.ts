@@ -30,7 +30,6 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    // Create base user
     const user = await this.prisma.user.create({
       data: {
         name: dto.name,
@@ -40,32 +39,11 @@ export class AuthService {
       },
     });
 
-    // If DOCTOR → create doctor profile
-    if (dto.role === 'DOCTOR') {
-      if (!dto.specialization || !dto.fees || !dto.availability) {
-        throw new BadRequestException(
-          'Doctor must provide specialization, fees, and availability',
-        );
-      }
-
-      await this.prisma.doctor.create({
-        data: {
-          userId: user.id,
-          specialization: dto.specialization,
-          fees: dto.fees,
-          availability: dto.availability,
-          document: dto.document || '',
-          status: 'PENDING',
-        },
-      });
-    }
-
     return {
       message: 'User registered successfully',
       userId: user.id,
     };
   }
-
   // -------------------------
   // LOGIN
   // -------------------------

@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsNumber,
 } from 'class-validator';
+import { DoctorSpecialization } from '@prisma/client';
 
 export enum Role {
   PATIENT = 'PATIENT',
@@ -28,8 +29,8 @@ export class RegisterDto {
 
   // Doctor-specific fields (optional for patients)
   @IsOptional()
-  @IsString()
-  specialization?: string;
+  @IsEnum(DoctorSpecialization)
+  specialization?: DoctorSpecialization;
 
   @IsOptional()
   @IsNumber()

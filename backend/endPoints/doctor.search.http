@@ -1,0 +1,10 @@
+### =========================
+### VARIABLES
+### =========================
+@baseUrl = http://localhost:3000
+
+
+### =========================
+### SEARCH DOCTORS
+### =========================
+GET {{baseUrl}}/doctor/search?specialization=NEUROLOGIST

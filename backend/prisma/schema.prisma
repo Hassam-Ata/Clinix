@@ -1,24 +1,9 @@
-
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
   provider = "postgresql"
-}
-
-
-model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role
-  createdAt DateTime @default(now())
-
-  doctor      Doctor?
-  appointments Appointment[] @relation("PatientAppointments")
 }
 
 enum Role {
@@ -27,49 +12,21 @@ enum Role {
   ADMIN
 }
 
-model Doctor {
-  id             String @id @default(uuid())
-  userId         String @unique
-
-  user           User   @relation(fields: [userId], references: [id])
-
-  specialization String
-  fees           Float
-  availability   String
-  document       String
-
-  status         DoctorStatus @default(PENDING)
-
-  appointments   Appointment[]
-}
-
 enum DoctorStatus {
   PENDING
   APPROVED
   REJECTED
 }
 
-model Appointment {
-  id          String @id @default(uuid())
-
-  patientId   String
-  doctorId    String
-
-  patient     User   @relation("PatientAppointments", fields: [patientId], references: [id])
-  doctor      Doctor @relation(fields: [doctorId], references: [id])
-
-  status      AppointmentStatus @default(PENDING)
-
-  meetingLink String?
-
-  totalFee    Float
-  platformFee Float
-  doctorFee   Float
-
-  stripeSessionId String?
-  isPaid      Boolean @default(false)
-
-  createdAt   DateTime @default(now())
+enum DoctorSpecialization {
+  CARDIOLOGIST
+  DERMATOLOGIST
+  NEUROLOGIST
+  ORTHOPEDIC
+  PEDIATRICIAN
+  PSYCHIATRIST
+  GYNECOLOGIST
+  GENERAL_PHYSICIAN
 }
 
 enum AppointmentStatus {
@@ -78,8 +35,76 @@ enum AppointmentStatus {
   REJECTED
   COMPLETED
 }
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  role     Role
+
+  doctor Doctor?
+
+  appointmentsAsPatient Appointment[] @relation("PatientAppointments")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+model Doctor {
+  id String @id @default(uuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  specialization DoctorSpecialization
+  fees           Float
+  documentUrl    String
+
+  status DoctorStatus @default(PENDING)
+
+  availability Availability[]
+
+  appointments Appointment[] @relation("DoctorAppointments")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime  @updatedAt @default(now())
+}
+
+model Availability {
+  id String @id @default(uuid())
+
+  doctorId String
+  doctor   Doctor @relation(fields: [doctorId], references: [id])
+
+  day       String
+  startTime DateTime
+  endTime   DateTime
+
+  createdAt DateTime @default(now())
+}
+
+model Appointment {
+  id String @id @default(uuid())
+
+  patientId String
+  doctorId  String
+
+  patient User   @relation("PatientAppointments", fields: [patientId], references: [id])
+  doctor  Doctor @relation("DoctorAppointments", fields: [doctorId], references: [id])
+
+  status AppointmentStatus @default(PENDING)
+
+  startTime DateTime
+  endTime   DateTime
+
+  meetingLink String?
+
+  createdAt DateTime @default(now())
+}
+
 model AiLog {
-  id        String @id @default(uuid())
+  id        String   @id @default(uuid())
   input     String
   output    String
   createdAt DateTime @default(now())
