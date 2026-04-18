@@ -1,0 +1,12 @@
+### =========================
+### GET MY NOTIFICATIONS
+### =========================
+GET http://localhost:3000/notifications
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZTYzOTg3LTQ1NjYtNDM2NC1iZjNmLTcxZjVlZjM2YWU5ZiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY1NDM2NTksImV4cCI6MTc3NzE0ODQ1OX0.WdKEu9SNS0EfBseRIDv4R1B0w755GTAONFzq6g2wSkE
+
+
+### =========================
+### MARK NOTIFICATION AS READ
+### =========================
+PATCH http://localhost:3000/notifications/d2fe3691-0750-4df7-8924-b4661965794e/read
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZTYzOTg3LTQ1NjYtNDM2NC1iZjNmLTcxZjVlZjM2YWU5ZiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY1NDM2NTksImV4cCI6MTc3NzE0ODQ1OX0.WdKEu9SNS0EfBseRIDv4R1B0w755GTAONFzq6g2wSkE

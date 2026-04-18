@@ -8,10 +8,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentStatusDto } from './dto/update-status.dto';
 import { AppointmentStatus } from '@prisma/client';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class AppointmentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationService: NotificationService,
+  ) {}
 
   async createAppointment(patientId: string, dto: CreateAppointmentDto) {
     const start = new Date(dto.startTime);
@@ -45,7 +49,6 @@ export class AppointmentService {
       throw new BadRequestException('Doctor not available at this time');
     }
 
-    // 3. Prevent overlapping appointments
     const conflict = await this.prisma.appointment.findFirst({
       where: {
         doctorId: doctor.id,
@@ -62,8 +65,7 @@ export class AppointmentService {
       throw new BadRequestException('Time slot already booked');
     }
 
-    // 4. Create appointment
-    return this.prisma.appointment.create({
+    const appointment = await this.prisma.appointment.create({
       data: {
         patientId,
         doctorId: doctor.id,
@@ -72,9 +74,17 @@ export class AppointmentService {
         status: AppointmentStatus.PENDING,
       },
     });
+
+    // 🔔 NOTIFY DOCTOR
+    await this.notificationService.createNotification(
+      doctor.userId,
+      'New appointment request received',
+      'APPOINTMENT_CREATED',
+    );
+
+    return appointment;
   }
 
-  // 👤 Patient appointments
   async getMyAppointments(patientId: string) {
     return this.prisma.appointment.findMany({
       where: { patientId },
@@ -83,9 +93,7 @@ export class AppointmentService {
     });
   }
 
-  // 🧑‍⚕️ Doctor appointments
   async getDoctorAppointments(userId: string) {
-    // 1. Map USER → DOCTOR
     const doctor = await this.prisma.doctor.findUnique({
       where: { userId },
     });
@@ -94,26 +102,18 @@ export class AppointmentService {
       throw new NotFoundException('Doctor profile not found');
     }
 
-    // 2. Fetch appointments using DOCTOR ID (NOT USER ID)
     return this.prisma.appointment.findMany({
-      where: {
-        doctorId: doctor.id,
-      },
-      include: {
-        patient: true,
-      },
-      orderBy: {
-        startTime: 'desc',
-      },
+      where: { doctorId: doctor.id },
+      include: { patient: true },
+      orderBy: { startTime: 'desc' },
     });
   }
-  // 🧑‍⚕️ Update status (DOCTOR ONLY)
+
   async updateStatus(
     userId: string,
     appointmentId: string,
     dto: UpdateAppointmentStatusDto,
   ) {
-    // 1. Get doctor from userId
     const doctor = await this.prisma.doctor.findUnique({
       where: { userId },
     });
@@ -122,20 +122,36 @@ export class AppointmentService {
       throw new NotFoundException('Doctor not found');
     }
 
-    // 2. Get appointment
     const appointment = await this.prisma.appointment.findUnique({
       where: { id: appointmentId },
     });
 
-    // 3. FIX CHECK (THIS is what matters)
     if (!appointment || appointment.doctorId !== doctor.id) {
       throw new ForbiddenException('Not allowed');
     }
 
-    // 4. Update
-    return this.prisma.appointment.update({
+    const updated = await this.prisma.appointment.update({
       where: { id: appointmentId },
       data: { status: dto.status },
     });
+
+    // 🔔 NOTIFY PATIENT
+    if (dto.status === AppointmentStatus.ACCEPTED) {
+      await this.notificationService.createNotification(
+        appointment.patientId,
+        'Your appointment was accepted',
+        'APPOINTMENT_ACCEPTED',
+      );
+    }
+
+    if (dto.status === AppointmentStatus.REJECTED) {
+      await this.notificationService.createNotification(
+        appointment.patientId,
+        'Your appointment was rejected',
+        'APPOINTMENT_REJECTED',
+      );
+    }
+
+    return updated;
   }
 }

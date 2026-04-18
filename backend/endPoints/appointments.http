@@ -8,7 +8,7 @@
 @doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZTYzOTg3LTQ1NjYtNDM2NC1iZjNmLTcxZjVlZjM2YWU5ZiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY1NDc2MjMsImV4cCI6MTc3NzE1MjQyM30.V8LNC2qeR21zts75Gn4ATaENroSksZLtMurr9C2grsI
 
 @doctorId = 0e1c4466-fa7c-4d16-b38c-79990260348b
-@appointmentId = b50016b5-d4ba-4813-aa4c-32720b4f3f01
+@appointmentId = 64ffb421-de2a-4c04-9ab4-7c443507e91b
 
 
 ### =========================

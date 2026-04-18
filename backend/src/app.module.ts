@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DoctorModule } from './doctor/doctor.module';
 import { AvailabilityModule } from './availability/availability.module';
 import { AppointmentModule } from './appointment/appointment.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AppointmentModule } from './appointment/appointment.module';
     DoctorModule,
     AvailabilityModule,
     AppointmentModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
