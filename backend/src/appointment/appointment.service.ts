@@ -8,16 +8,19 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentStatusDto } from './dto/update-status.dto';
 import { AppointmentStatus } from '@prisma/client';
-import { NotificationService } from '../notification/notification.service';
 import { CompleteAppointmentDto } from './dto/complete-appointment.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AppointmentService {
   constructor(
     private prisma: PrismaService,
-    private notificationService: NotificationService,
+    private eventEmitter: EventEmitter2, // ✅ ADDED
   ) {}
 
+  // =========================
+  // CREATE APPOINTMENT
+  // =========================
   async createAppointment(patientId: string, dto: CreateAppointmentDto) {
     const start = new Date(dto.startTime);
     const end = new Date(dto.endTime);
@@ -76,22 +79,24 @@ export class AppointmentService {
       },
     });
 
-    // 🔔 NOTIFY DOCTOR
-    await this.notificationService.createNotification(
-      doctor.userId,
-      'New appointment request received',
-      'APPOINTMENT_CREATED',
-    );
+    // 🔥 EVENT: Appointment Created
+    this.eventEmitter.emit('appointment.created', {
+      appointmentId: appointment.id,
+      doctorId: doctor.id,
+      patientId,
+    });
 
     return appointment;
   }
 
-  async completeAppointment(
+  // =========================
+  // UPDATE STATUS (ACCEPT / REJECT)
+  // =========================
+  async updateStatus(
     userId: string,
     appointmentId: string,
-    dto: CompleteAppointmentDto,
+    dto: UpdateAppointmentStatusDto,
   ) {
-    // 1. Get doctor
     const doctor = await this.prisma.doctor.findUnique({
       where: { userId },
     });
@@ -100,7 +105,59 @@ export class AppointmentService {
       throw new NotFoundException('Doctor not found');
     }
 
-    // 2. Get appointment
+    const appointment = await this.prisma.appointment.findUnique({
+      where: { id: appointmentId },
+    });
+
+    if (!appointment || appointment.doctorId !== doctor.id) {
+      throw new ForbiddenException('Not allowed');
+    }
+
+    const updated = await this.prisma.appointment.update({
+      where: { id: appointmentId },
+      data: {
+        status: dto.status,
+        meetingLink: dto.meetingLink ?? appointment.meetingLink,
+      },
+    });
+
+    // 🔥 EVENTS ONLY (NO DIRECT NOTIFICATIONS)
+
+    if (dto.status === AppointmentStatus.ACCEPTED) {
+      this.eventEmitter.emit('appointment.accepted', {
+        appointmentId: updated.id,
+        patientId: updated.patientId,
+        doctorId: updated.doctorId,
+        meetingLink: updated.meetingLink,
+      });
+    }
+
+    if (dto.status === AppointmentStatus.REJECTED) {
+      this.eventEmitter.emit('appointment.rejected', {
+        appointmentId: updated.id,
+        patientId: updated.patientId,
+      });
+    }
+
+    return updated;
+  }
+
+  // =========================
+  // COMPLETE APPOINTMENT
+  // =========================
+  async completeAppointment(
+    userId: string,
+    appointmentId: string,
+    dto: CompleteAppointmentDto,
+  ) {
+    const doctor = await this.prisma.doctor.findUnique({
+      where: { userId },
+    });
+
+    if (!doctor) {
+      throw new NotFoundException('Doctor not found');
+    }
+
     const appointment = await this.prisma.appointment.findUnique({
       where: { id: appointmentId },
     });
@@ -109,30 +166,40 @@ export class AppointmentService {
       throw new NotFoundException('Appointment not found');
     }
 
-    // 3. Ownership check
     if (appointment.doctorId !== doctor.id) {
       throw new ForbiddenException('Not allowed');
     }
 
-    // 4. Status validation (IMPORTANT CHANGE)
     if (appointment.status === AppointmentStatus.COMPLETED) {
       throw new BadRequestException('Appointment already completed');
     }
+
     if (appointment.status !== AppointmentStatus.ACCEPTED) {
       throw new BadRequestException(
-        'Only ACCEPTED (paid) appointments can be completed',
+        'Only ACCEPTED appointments can be completed',
       );
     }
 
-    // 5. Update to COMPLETED
-    return this.prisma.appointment.update({
+    const updated = await this.prisma.appointment.update({
       where: { id: appointmentId },
       data: {
         status: AppointmentStatus.COMPLETED,
       },
     });
+
+    // 🔥 EVENT
+    this.eventEmitter.emit('appointment.completed', {
+      appointmentId: updated.id,
+      patientId: updated.patientId,
+      doctorId: updated.doctorId,
+    });
+
+    return updated;
   }
 
+  // =========================
+  // GET METHODS (UNCHANGED)
+  // =========================
   async getMyAppointments(patientId: string) {
     return this.prisma.appointment.findMany({
       where: { patientId },
@@ -157,52 +224,9 @@ export class AppointmentService {
     });
   }
 
-  async updateStatus(
-    userId: string,
-    appointmentId: string,
-    dto: UpdateAppointmentStatusDto,
-  ) {
-    const doctor = await this.prisma.doctor.findUnique({
-      where: { userId },
-    });
-
-    if (!doctor) {
-      throw new NotFoundException('Doctor not found');
-    }
-
-    const appointment = await this.prisma.appointment.findUnique({
-      where: { id: appointmentId },
-    });
-
-    if (!appointment || appointment.doctorId !== doctor.id) {
-      throw new ForbiddenException('Not allowed');
-    }
-
-    const updated = await this.prisma.appointment.update({
-      where: { id: appointmentId },
-      data: { status: dto.status },
-    });
-
-    // 🔔 NOTIFY PATIENT
-    if (dto.status === AppointmentStatus.ACCEPTED) {
-      await this.notificationService.createNotification(
-        appointment.patientId,
-        'Your appointment was accepted',
-        'APPOINTMENT_ACCEPTED',
-      );
-    }
-
-    if (dto.status === AppointmentStatus.REJECTED) {
-      await this.notificationService.createNotification(
-        appointment.patientId,
-        'Your appointment was rejected',
-        'APPOINTMENT_REJECTED',
-      );
-    }
-
-    return updated;
-  }
-
+  // =========================
+  // CANCEL APPOINTMENT
+  // =========================
   async cancelAppointment(userId: string, appointmentId: string) {
     const appointment = await this.prisma.appointment.findUnique({
       where: { id: appointmentId },
@@ -212,12 +236,10 @@ export class AppointmentService {
       throw new NotFoundException('Appointment not found');
     }
 
-    // only patient can cancel
     if (appointment.patientId !== userId) {
       throw new ForbiddenException('Not allowed');
     }
 
-    // ✅ Always check full status safely (no TS narrowing issues)
     const status = appointment.status;
 
     if (status === AppointmentStatus.COMPLETED) {
@@ -232,16 +254,19 @@ export class AppointmentService {
       throw new BadRequestException('Already cancelled');
     }
 
-    // (optional rule - recommended: allow cancel before completion/payment logic)
-    if (status === AppointmentStatus.ACCEPTED) {
-      // allowed in your current architecture (pre-payment stage)
-    }
-
-    return this.prisma.appointment.update({
+    const updated = await this.prisma.appointment.update({
       where: { id: appointmentId },
       data: {
         status: AppointmentStatus.CANCELLED,
       },
     });
+
+    // 🔥 EVENT
+    this.eventEmitter.emit('appointment.cancelled', {
+      appointmentId: updated.id,
+      patientId: updated.patientId,
+    });
+
+    return updated;
   }
 }

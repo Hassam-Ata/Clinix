@@ -13,12 +13,17 @@ import { DoctorDashboardModule } from './doctor-dashboard/doctor-dashboard.modul
 import { PatientDashboardModule } from './patient-dashboard/patient-dashboard.module';
 import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module';
 import { AdminDoctorModule } from './admin-doctor/admin-doctor.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EventsModule } from './events/events.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
     PrismaModule,
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    EventEmitterModule.forRoot(),
+    EventsModule,
     DoctorModule,
     AvailabilityModule,
     AppointmentModule,
@@ -28,6 +33,7 @@ import { AdminDoctorModule } from './admin-doctor/admin-doctor.module';
     PatientDashboardModule,
     AdminDashboardModule,
     AdminDoctorModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

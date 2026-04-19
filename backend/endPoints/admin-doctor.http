@@ -4,7 +4,7 @@
 
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlODhiYmFjLTRhOTAtNDg1Yy1iODdmLTNiOTBlNGFiMjlhMiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3NjYwNzMxMiwiZXhwIjoxNzc3MjEyMTEyfQ.tL5WvhpUic_EGV0Qt-WUVnpCr84FYBj1xR-TO6FkhxE
 
-@doctorId = d723ed8c-434b-404f-92d0-56a0bee9d3f4
+@doctorId = f7a0d86e-89e9-466f-986c-19e8e2c8cfe2
 
 ### GET PENDING DOCTORS
 GET {{baseUrl}}/admin/doctors?status=PENDING

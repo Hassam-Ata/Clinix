@@ -5,22 +5,24 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { DoctorStatus } from '@prisma/client';
-import { NotificationService } from '../notification/notification.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import {
+  DoctorApprovedEvent,
+  DoctorRejectedEvent,
+} from '../events/doctor.events';
 
 @Injectable()
 export class AdminDoctorService {
   constructor(
     private prisma: PrismaService,
-    private notificationService: NotificationService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   // 📋 LIST
   async getDoctors(status?: string) {
     return this.prisma.doctor.findMany({
       where: status ? { status: status as DoctorStatus } : undefined,
-      include: {
-        user: true,
-      },
+      include: { user: true },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -29,9 +31,7 @@ export class AdminDoctorService {
   async getDoctorById(id: string) {
     const doctor = await this.prisma.doctor.findUnique({
       where: { id },
-      include: {
-        user: true,
-      },
+      include: { user: true },
     });
 
     if (!doctor) {
@@ -60,11 +60,10 @@ export class AdminDoctorService {
       data: { status: DoctorStatus.APPROVED },
     });
 
-    // 🔔 NOTIFY DOCTOR
-    await this.notificationService.createNotification(
-      doctor.userId,
-      'Your profile has been approved',
-      'DOCTOR_APPROVED',
+    // 🚀 EMIT EVENT (NOT EMAIL DIRECTLY)
+    this.eventEmitter.emit(
+      'doctor.approved',
+      new DoctorApprovedEvent(updated.id, updated.userId),
     );
 
     return updated;
@@ -92,11 +91,10 @@ export class AdminDoctorService {
       },
     });
 
-    // 🔔 NOTIFY DOCTOR WITH REASON
-    await this.notificationService.createNotification(
-      doctor.userId,
-      `Your profile was rejected: ${reason}`,
-      'DOCTOR_REJECTED',
+    // 🚀 EMIT EVENT
+    this.eventEmitter.emit(
+      'doctor.rejected',
+      new DoctorRejectedEvent(updated.id, updated.userId, reason),
     );
 
     return updated;

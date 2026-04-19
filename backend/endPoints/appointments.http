@@ -47,7 +47,8 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{doctorToken}}
 
 {
-  "status": "ACCEPTED"
+  "status": "ACCEPTED",
+  "meetingLink":"https://meet.google.com/abc-xyz"
 }
 
 

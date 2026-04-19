@@ -3,6 +3,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { AppointmentStatus, PaymentStatus } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AppointmentPaidEvent } from '../events/appointment.events';
 
 @Injectable()
 export class PaymentService {
@@ -11,6 +13,7 @@ export class PaymentService {
   constructor(
     private prisma: PrismaService,
     private configService: ConfigService,
+    private eventEmitter: EventEmitter2,
   ) {
     this.stripe = new Stripe(
       this.configService.get<string>('STRIPE_SECRET_KEY')!,
@@ -72,7 +75,7 @@ export class PaymentService {
         sig,
         this.configService.get('STRIPE_WEBHOOK_SECRET')!,
       );
-    } catch (err) {
+    } catch (err: any) {
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -92,11 +95,21 @@ export class PaymentService {
           data: { status: PaymentStatus.PAID },
         });
 
-        // update appointment
-        await this.prisma.appointment.update({
+        // update appointment and notify listeners after payment confirmation
+        const updatedAppointment = await this.prisma.appointment.update({
           where: { id: payment.appointmentId },
           data: { status: AppointmentStatus.ACCEPTED },
         });
+
+        this.eventEmitter.emit(
+          'appointment.paid',
+          new AppointmentPaidEvent(
+            updatedAppointment.id,
+            updatedAppointment.patientId,
+            updatedAppointment.doctorId,
+            updatedAppointment.meetingLink,
+          ),
+        );
       }
     }
 
