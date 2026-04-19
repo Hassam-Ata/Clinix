@@ -11,6 +11,7 @@ import { NotificationModule } from './notification/notification.module';
 import { PaymentModule } from './payment/payment.module';
 import { DoctorDashboardModule } from './doctor-dashboard/doctor-dashboard.module';
 import { PatientDashboardModule } from './patient-dashboard/patient-dashboard.module';
+import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PatientDashboardModule } from './patient-dashboard/patient-dashboard.mo
     PaymentModule,
     DoctorDashboardModule,
     PatientDashboardModule,
+    AdminDashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
