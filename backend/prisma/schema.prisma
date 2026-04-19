@@ -69,6 +69,8 @@ model Doctor {
 
   status DoctorStatus @default(PENDING)
 
+  rejectionReason String?
+
   availability Availability[]
 
   appointments Appointment[] @relation("DoctorAppointments")

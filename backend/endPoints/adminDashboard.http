@@ -1,0 +1,51 @@
+### =========================
+### VARIABLES
+### =========================
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlODhiYmFjLTRhOTAtNDg1Yy1iODdmLTNiOTBlNGFiMjlhMiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3NjYwNzMxMiwiZXhwIjoxNzc3MjEyMTEyfQ.tL5WvhpUic_EGV0Qt-WUVnpCr84FYBj1xR-TO6FkhxE
+
+
+### =========================
+### ADD ADMIN
+### =========================
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "batman",
+  "email": "batman30@gmail.com",
+  "password": "batman123",
+  "role": "PATIENT"
+}
+
+### GET ADMIN TOKEN
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "batman30@gmail.com",
+  "password": "batman123"
+}
+
+
+### OVERVIEW
+GET http://localhost:3000/admin/dashboard/overview
+Authorization: Bearer {{adminToken}}
+
+### DOCTORS
+GET http://localhost:3000/admin/dashboard/doctors
+Authorization: Bearer {{adminToken}}
+
+### APPOINTMENTS
+GET http://localhost:3000/admin/dashboard/appointments
+Authorization: Bearer {{adminToken}}
+
+### PAYMENTS
+GET http://localhost:3000/admin/dashboard/payments
+Authorization: Bearer {{adminToken}}
+
+### REVENUE
+GET http://localhost:3000/admin/dashboard/revenue
+Authorization: Bearer {{adminToken}}

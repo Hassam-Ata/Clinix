@@ -1,0 +1,32 @@
+
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlODhiYmFjLTRhOTAtNDg1Yy1iODdmLTNiOTBlNGFiMjlhMiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3NjYwNzMxMiwiZXhwIjoxNzc3MjEyMTEyfQ.tL5WvhpUic_EGV0Qt-WUVnpCr84FYBj1xR-TO6FkhxE
+
+@doctorId = d723ed8c-434b-404f-92d0-56a0bee9d3f4
+
+### GET PENDING DOCTORS
+GET {{baseUrl}}/admin/doctors?status=PENDING
+Authorization: Bearer {{adminToken}}
+
+### GET ALL DOCTORS
+GET {{baseUrl}}/admin/doctors
+Authorization: Bearer {{adminToken}}
+
+### GET SINGLE DOCTOR
+GET {{baseUrl}}/admin/doctors/{{doctorId}}
+Authorization: Bearer {{adminToken}}
+
+### APPROVE
+PATCH {{baseUrl}}/admin/doctors/{{doctorId}}/approve
+Authorization: Bearer {{adminToken}}
+
+### REJECT
+PATCH {{baseUrl}}/admin/doctors/{{doctorId}}/reject
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "reason": "Invalid documents"
+}
