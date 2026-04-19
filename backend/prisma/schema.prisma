@@ -34,6 +34,7 @@ enum AppointmentStatus {
   ACCEPTED
   REJECTED
   COMPLETED
+  CANCELLED
 }
 
 enum PaymentStatus {

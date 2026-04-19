@@ -59,4 +59,9 @@ export class AppointmentController {
   ) {
     return this.service.completeAppointment(req.user.id, id, dto);
   }
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/cancel')
+  cancel(@Req() req, @Param('id') id: string) {
+    return this.service.cancelAppointment(req.user.id, id);
+  }
 }

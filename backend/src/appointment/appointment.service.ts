@@ -202,4 +202,46 @@ export class AppointmentService {
 
     return updated;
   }
+
+  async cancelAppointment(userId: string, appointmentId: string) {
+    const appointment = await this.prisma.appointment.findUnique({
+      where: { id: appointmentId },
+    });
+
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
+    }
+
+    // only patient can cancel
+    if (appointment.patientId !== userId) {
+      throw new ForbiddenException('Not allowed');
+    }
+
+    // ✅ Always check full status safely (no TS narrowing issues)
+    const status = appointment.status;
+
+    if (status === AppointmentStatus.COMPLETED) {
+      throw new BadRequestException('Cannot cancel completed appointment');
+    }
+
+    if (status === AppointmentStatus.REJECTED) {
+      throw new BadRequestException('Already rejected');
+    }
+
+    if (status === AppointmentStatus.CANCELLED) {
+      throw new BadRequestException('Already cancelled');
+    }
+
+    // (optional rule - recommended: allow cancel before completion/payment logic)
+    if (status === AppointmentStatus.ACCEPTED) {
+      // allowed in your current architecture (pre-payment stage)
+    }
+
+    return this.prisma.appointment.update({
+      where: { id: appointmentId },
+      data: {
+        status: AppointmentStatus.CANCELLED,
+      },
+    });
+  }
 }
