@@ -12,6 +12,7 @@ import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentStatusDto } from './dto/update-status.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CompleteAppointmentDto } from './dto/complete-appointment.dto';
 
 @Controller('appointment')
 export class AppointmentController {
@@ -47,5 +48,15 @@ export class AppointmentController {
     @Body() dto: UpdateAppointmentStatusDto,
   ) {
     return this.service.updateStatus(req.user.id, id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/complete')
+  completeAppointment(
+    @Req() req,
+    @Param('id') id: string,
+    @Body() dto: CompleteAppointmentDto,
+  ) {
+    return this.service.completeAppointment(req.user.id, id, dto);
   }
 }

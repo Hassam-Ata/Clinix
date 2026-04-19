@@ -61,3 +61,8 @@ Authorization: Bearer {{doctorToken}}
 {
   "status": "REJECTED"
 }
+
+
+### COMPLETE APPOINTMENT (SUCCESS)
+PATCH http://localhost:3000/appointment/{{appointmentId}}/complete
+Authorization: Bearer {{doctorToken}}

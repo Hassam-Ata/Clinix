@@ -9,6 +9,7 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentStatusDto } from './dto/update-status.dto';
 import { AppointmentStatus } from '@prisma/client';
 import { NotificationService } from '../notification/notification.service';
+import { CompleteAppointmentDto } from './dto/complete-appointment.dto';
 
 @Injectable()
 export class AppointmentService {
@@ -83,6 +84,53 @@ export class AppointmentService {
     );
 
     return appointment;
+  }
+
+  async completeAppointment(
+    userId: string,
+    appointmentId: string,
+    dto: CompleteAppointmentDto,
+  ) {
+    // 1. Get doctor
+    const doctor = await this.prisma.doctor.findUnique({
+      where: { userId },
+    });
+
+    if (!doctor) {
+      throw new NotFoundException('Doctor not found');
+    }
+
+    // 2. Get appointment
+    const appointment = await this.prisma.appointment.findUnique({
+      where: { id: appointmentId },
+    });
+
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
+    }
+
+    // 3. Ownership check
+    if (appointment.doctorId !== doctor.id) {
+      throw new ForbiddenException('Not allowed');
+    }
+
+    // 4. Status validation (IMPORTANT CHANGE)
+    if (appointment.status === AppointmentStatus.COMPLETED) {
+      throw new BadRequestException('Appointment already completed');
+    }
+    if (appointment.status !== AppointmentStatus.ACCEPTED) {
+      throw new BadRequestException(
+        'Only ACCEPTED (paid) appointments can be completed',
+      );
+    }
+
+    // 5. Update to COMPLETED
+    return this.prisma.appointment.update({
+      where: { id: appointmentId },
+      data: {
+        status: AppointmentStatus.COMPLETED,
+      },
+    });
   }
 
   async getMyAppointments(patientId: string) {
