@@ -24,6 +24,10 @@ export class PaymentService {
   }
 
   async createCheckoutSession(appointmentId: string) {
+    const frontendBaseUrl =
+      this.configService.get<string>('FRONTEND_URL')?.replace(/\/$/, '') ||
+      'http://localhost:5173';
+
     const appointment = await this.prisma.appointment.findUnique({
       where: { id: appointmentId },
       include: { doctor: true },
@@ -48,8 +52,8 @@ export class PaymentService {
           quantity: 1,
         },
       ],
-      success_url: 'http://localhost:3000/success',
-      cancel_url: 'http://localhost:3000/cancel',
+      success_url: `${frontendBaseUrl}/success`,
+      cancel_url: `${frontendBaseUrl}/cancel`,
     });
 
     await this.prisma.payment.create({
