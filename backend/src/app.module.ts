@@ -8,16 +8,18 @@ import { DoctorModule } from './doctor/doctor.module';
 import { AvailabilityModule } from './availability/availability.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { NotificationModule } from './notification/notification.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
     PrismaModule,
     AuthModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     DoctorModule,
     AvailabilityModule,
     AppointmentModule,
     NotificationModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

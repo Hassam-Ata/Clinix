@@ -36,6 +36,12 @@ enum AppointmentStatus {
   COMPLETED
 }
 
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
 model User {
   id       String @id @default(uuid())
   name     String
@@ -48,7 +54,7 @@ model User {
   appointmentsAsPatient Appointment[] @relation("PatientAppointments")
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Doctor {
@@ -68,7 +74,7 @@ model Doctor {
   appointments Appointment[] @relation("DoctorAppointments")
 
   createdAt DateTime @default(now())
-  updatedAt DateTime  @updatedAt @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Availability {
@@ -109,12 +115,23 @@ model AiLog {
   output    String
   createdAt DateTime @default(now())
 }
+
 model Notification {
-  id        String   @id @default(uuid())
-  userId    String
-  message   String
-  type      String   // APPOINTMENT_CREATED | ACCEPTED | REJECTED
-  isRead    Boolean  @default(false)
+  id      String  @id @default(uuid())
+  userId  String
+  message String
+  type    String // APPOINTMENT_CREATED | ACCEPTED | REJECTED
+  isRead  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  appointmentId   String
+  amount          Float
+  status          PaymentStatus @default(PENDING)
+  stripeSessionId String?
 
   createdAt DateTime @default(now())
 }

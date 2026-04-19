@@ -1,0 +1,7 @@
+### CREATE PAYMENT SESSION
+POST http://localhost:3000/payment/create-session
+Content-Type: application/json
+
+{
+  "appointmentId": "64ffb421-de2a-4c04-9ab4-7c443507e91b"
+}
