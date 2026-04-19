@@ -46,3 +46,24 @@ Authorization: Bearer {{doctorToken}}
 ### GET ALL DOCTORS
 ### =========================
 GET {{baseUrl}}/doctor/all
+
+
+### SUMMARY
+GET {{baseUrl}}/doctor/dashboard/summary
+Authorization: Bearer {{doctorToken}}
+
+### TODAY
+GET {{baseUrl}}/doctor/dashboard/today
+Authorization: Bearer {{doctorToken}}
+
+### UPCOMING
+GET {{baseUrl}}/doctor/dashboard/upcoming
+Authorization: Bearer {{doctorToken}}
+
+### COMPLETED
+GET {{baseUrl}}/doctor/dashboard/completed
+Authorization: Bearer {{doctorToken}}
+
+### EARNINGS
+GET {{baseUrl}}/doctor/dashboard/earnings
+Authorization: Bearer {{doctorToken}}

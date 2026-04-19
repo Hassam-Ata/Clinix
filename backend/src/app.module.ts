@@ -9,6 +9,7 @@ import { AvailabilityModule } from './availability/availability.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { NotificationModule } from './notification/notification.module';
 import { PaymentModule } from './payment/payment.module';
+import { DoctorDashboardModule } from './doctor-dashboard/doctor-dashboard.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PaymentModule } from './payment/payment.module';
     AppointmentModule,
     NotificationModule,
     PaymentModule,
+    DoctorDashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
