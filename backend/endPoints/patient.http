@@ -4,11 +4,31 @@
 @baseUrl = http://localhost:3000
 @contentType = application/json
 
-@patientToken = <PASTE_PATIENT_TOKEN_HERE>
+@patientToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA0ZDU5YzVlLTBkNzEtNGJlYS1hY2MyLTM1OTQ4MGRmOTQwNSIsInJvbGUiOiJQQVRJRU5UIiwiaWF0IjoxNzc2NjA1Nzc3LCJleHAiOjE3NzcyMTA1Nzd9.S9IXopoJ63enOV4O3JMzd7-psLDvEErJlMJyfApe2Rk
 
 
 ### =========================
 ### TEST ME
 ### =========================
 GET {{baseUrl}}/test/me
+Authorization: Bearer {{patientToken}}
+
+### SUMMARY
+GET {{baseUrl}}/patient/dashboard/summary
+Authorization: Bearer {{patientToken}}
+
+### UPCOMING
+GET {{baseUrl}}/patient/dashboard/upcoming
+Authorization: Bearer {{patientToken}}
+
+### HISTORY
+GET {{baseUrl}}/patient/dashboard/history
+Authorization: Bearer {{patientToken}}
+
+### PAYMENTS
+GET {{baseUrl}}/patient/dashboard/payments
+Authorization: Bearer {{patientToken}}
+
+### SPENDING
+GET {{baseUrl}}/patient/dashboard/spending
 Authorization: Bearer {{patientToken}}
