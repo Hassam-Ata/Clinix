@@ -5,6 +5,7 @@ import LandingPage from "./pages/LandingPage";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import DoctorDashboard from "./pages/doctor/Dashboard";
+import Availability from "./pages/doctor/Availability";
 import PatientDashboard from "./pages/patient/Dashboard";
 import PatientDoctors from "./pages/patient/Doctors";
 import PatientAppointments from "./pages/patient/Appointments";
@@ -20,6 +21,7 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+            <Route path="/doctor/availability" element={<Availability />} />
             <Route path="/patient/dashboard" element={<PatientDashboard />} />
             <Route path="/patient/doctors" element={<PatientDoctors />} />
             <Route path="/patient/appointments" element={<PatientAppointments />} />
