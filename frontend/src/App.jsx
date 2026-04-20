@@ -1,11 +1,26 @@
-import { Button } from "./components/ui/button";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./components/theme-provider";
+import LandingPage from "./pages/LandingPage";
+import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
+import DoctorDashboard from "./pages/doctor/Dashboard";
+import PatientDashboard from "./pages/patient/Dashboard";
+import AdminDashboard from "./pages/admin/Dashboard";
 
 const App = () => {
   return (
-    <div>
-      <h1 class="text-3xl font-bold underline">Hello world!</h1>
-      <Button variant="outline">Button</Button>
-    </div>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+          <Route path="/patient/dashboard" element={<PatientDashboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 };
 

@@ -55,3 +55,10 @@ Content-Type: {{contentType}}
   "email": "doctor@test.com",
   "password": "123456"
 }
+
+
+### =========================
+### VALIDATE TOKEN
+### =========================
+POST {{baseUrl}}/auth/validate
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZTYzOTg3LTQ1NjYtNDM2NC1iZjNmLTcxZjVlZjM2YWU5ZiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY2Nzc5OTQsImV4cCI6MTc3NzI4Mjc5NH0.lfa3f8f5sfFIwSjm3TE89Qm1X5VO3FCmbq4vuCHPdAg

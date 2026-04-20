@@ -74,4 +74,12 @@ export class AuthService {
       doctorStatus: user.doctor?.status || null,
     };
   }
+  async validate(token: string) {
+    try {
+      const decoded = await this.jwt.verify(token);
+      return { role: decoded.role };
+    } catch (error: any) {
+      throw new UnauthorizedException(error.message);
+    }
+  }
 }
