@@ -7,11 +7,15 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Stethoscope, DollarSign, Clock, CheckCircle2 } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Search, Stethoscope, DollarSign, Clock, CheckCircle2, Calendar, MapPin, Star, AlertCircle } from "lucide-react";
+import { format } from "date-fns";
 
 const Doctors = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [specializationFilter, setSpecializationFilter] = useState("all");
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   const { data: doctors, isLoading, error } = useQuery({
     queryKey: ["doctors"],
@@ -21,14 +25,28 @@ const Doctors = () => {
     },
   });
 
+  const formatInUTC = (dateString, formatStr) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: "UTC",
+      ...(formatStr === "MMM do" ? { month: "short", day: "numeric" } : { hour: "2-digit", minute: "2-digit", hour12: false })
+    }).format(date);
+  };
+
   const filteredDoctors = doctors?.filter((doctor) => {
-    const matchesSearch = doctor.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase());
+    const nameMatch = doctor.user.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const specMatch = doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = nameMatch || specMatch;
     const matchesSpecialization = specializationFilter === "all" || doctor.specialization === specializationFilter;
     return matchesSearch && matchesSpecialization;
   });
 
   const specializations = doctors ? ["all", ...new Set(doctors.map(d => d.specialization))] : ["all"];
+
+  const handleBookClick = (doctor) => {
+    setSelectedDoctor(doctor);
+    setIsBookingOpen(true);
+  };
 
   if (error) {
     return (
@@ -51,7 +69,7 @@ const Doctors = () => {
       </div>
 
       {/* Filter Section */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8 sticky top-20 z-10 bg-background/80 backdrop-blur-md p-4 rounded-xl shadow-sm">
+      <div className="flex flex-col md:flex-row gap-4 mb-8 sticky top-20 z-10 bg-background/80 backdrop-blur-md p-4 rounded-xl border border-border shadow-sm">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -61,9 +79,9 @@ const Doctors = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div >
+        <div className="w-full md:w-[200px]">
           <Select value={specializationFilter} onValueChange={setSpecializationFilter}>
-            <SelectTrigger>
+            <SelectTrigger className="h-11">
               <SelectValue placeholder="Specialization" />
             </SelectTrigger>
             <SelectContent>
@@ -132,26 +150,27 @@ const Doctors = () => {
                           {doctor.fees}
                         </span>
                       </div>
-                      <div className="flex flex-col items-end">
-                        <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Experience</span>
-                        <span className="text-sm font-medium">5+ Years</span>
+                      <div className="flex items-center gap-1 text-yellow-500">
+                        <Star className="h-4 w-4 fill-current" />
+                        <span className="text-sm font-bold text-foreground">4.9</span>
+                        <span className="text-xs text-muted-foreground">(120)</span>
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <p className="text-sm font-semibold flex items-center gap-2">
                         <Clock className="h-4 w-4 text-primary" />
-                        Next Availability
+                        Available Slots
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {doctor.availability?.length > 0 ? (
-                          doctor.availability.slice(0, 2).map((slot) => (
-                            <Badge key={slot.id} variant="outline" className="font-normal text-xs py-1">
-                              {slot.day}: {new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          doctor.availability.map((slot) => (
+                            <Badge key={slot.id} variant="outline" className="font-normal text-xs py-1 border-primary/20 bg-primary/5">
+                              {formatInUTC(slot.startTime, "MMM do")}: {formatInUTC(slot.startTime, "HH:mm")} to {formatInUTC(slot.endTime, "HH:mm")}
                             </Badge>
                           ))
                         ) : (
-                          <span className="text-xs text-muted-foreground italic">No slots scheduled this week</span>
+                          <span className="text-xs text-muted-foreground italic">No slots scheduled</span>
                         )}
                       </div>
                     </div>
@@ -159,7 +178,7 @@ const Doctors = () => {
                 </CardContent>
                 <CardFooter>
                   <Button className="w-full h-11 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all font-semibold" 
-                    onClick={() => console.log(`Booking for ${doctor.id}`)}>
+                    onClick={() => handleBookClick(doctor)}>
                     Book Appointment
                   </Button>
                 </CardFooter>
@@ -179,7 +198,129 @@ const Doctors = () => {
           )}
         </div>
       )}
+
+      {/* Booking Dialog */}
+      <BookingDialog 
+        doctor={selectedDoctor} 
+        isOpen={isBookingOpen} 
+        onClose={() => setIsBookingOpen(false)} 
+      />
     </div>
+  );
+};
+
+const BookingDialog = ({ doctor, isOpen, onClose }) => {
+  const [selectedSlot, setSelectedSlot] = useState(null);
+
+  const { data: availability, isLoading } = useQuery({
+    queryKey: ["availability", doctor?.id],
+    queryFn: async () => {
+      const response = await api.get(`/doctor/availability/${doctor.id}`);
+      return response.data;
+    },
+    enabled: !!doctor?.id && isOpen,
+  });
+
+  const handleBooking = async () => {
+    if (!selectedSlot) return;
+    try {
+      await api.post("/appointment", {
+        doctorId: doctor.id,
+        availabilityId: selectedSlot.id,
+        startTime: selectedSlot.startTime,
+        endTime: selectedSlot.endTime,
+      });
+      alert("Appointment booked successfully!");
+      onClose();
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to book appointment");
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none shadow-2xl">
+        <div className="bg-gradient-to-br from-primary to-blue-700 p-6 text-primary-foreground">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
+              <Calendar className="h-6 w-6" />
+              Book Appointment
+            </DialogTitle>
+            <DialogDescription className="text-blue-100 text-base">
+              With {doctor?.user.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 flex items-center gap-4">
+            <div className="bg-white/20 backdrop-blur-md p-2 rounded-lg">
+              <Badge variant="outline" className="border-white/50 text-white capitalize">
+                {doctor?.specialization.toLowerCase().replace("_", " ")}
+              </Badge>
+            </div>
+            <div className="flex items-center gap-1 text-sm font-medium">
+               <DollarSign className="h-4 w-4" />
+               {doctor?.fees} Consultation Fee
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6 space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Select Available Slot</h3>
+            
+            {isLoading ? (
+              <div className="grid grid-cols-2 gap-3">
+                <Skeleton className="h-12 w-full rounded-xl" />
+                <Skeleton className="h-12 w-full rounded-xl" />
+                <Skeleton className="h-12 w-full rounded-xl" />
+                <Skeleton className="h-12 w-full rounded-xl" />
+              </div>
+            ) : availability?.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                {availability.map((slot) => (
+                  <button
+                    key={slot.id}
+                    onClick={() => setSelectedSlot(slot)}
+                    className={`flex flex-col items-start p-3 rounded-xl border-2 transition-all text-left ${
+                      selectedSlot?.id === slot.id
+                        ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                        : "border-border hover:border-primary/30 hover:bg-muted/50"
+                    }`}
+                  >
+                    <span className="text-sm font-semibold">
+                      {formatInUTC(slot.startTime, "MMM do")}: {formatInUTC(slot.startTime, "HH:mm")} to {formatInUTC(slot.endTime, "HH:mm")}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 bg-muted/30 rounded-2xl border-2 border-dashed">
+                <p className="text-muted-foreground font-medium italic">No slots available this week.</p>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800 flex gap-3">
+            <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+            <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
+              Appointment link will be shared after doctor approval. Cancellation is free up to 24 hours before the session.
+            </p>
+          </div>
+        </div>
+
+        <DialogFooter className="p-6 bg-muted/30 border-t items-center sm:justify-between gap-4">
+          <Button variant="ghost" className="font-semibold text-muted-foreground" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button 
+            className="w-full sm:w-auto min-w-[150px] font-bold shadow-xl shadow-primary/20" 
+            disabled={!selectedSlot}
+            onClick={handleBooking}
+          >
+            Confirm Booking
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
