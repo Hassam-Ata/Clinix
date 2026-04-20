@@ -16,6 +16,13 @@ Authorization: Bearer {{patientToken}}
 ### SUMMARY
 GET {{baseUrl}}/patient/dashboard/summary
 Authorization: Bearer {{patientToken}}
+# Response
+# {
+#   "totalAppointments": 1,
+#   "completedAppointments": 0,
+#   "upcomingAppointments": 1,
+#   "totalSpent": 75
+# }
 
 ### UPCOMING
 GET {{baseUrl}}/patient/dashboard/upcoming
@@ -28,7 +35,40 @@ Authorization: Bearer {{patientToken}}
 ### PAYMENTS
 GET {{baseUrl}}/patient/dashboard/payments
 Authorization: Bearer {{patientToken}}
+# Response
+# [
+#   {
+#     "id": "f5e2ff99-c522-47a0-8113-de9a2ca03d6d",
+#     "amount": 75,
+#     "status": "PAID",
+#     "createdAt": "2026-04-19T19:08:04.036Z",
+#     "appointment": {
+#       "id": "64ffb421-de2a-4c04-9ab4-7c443507e91b",
+#       "startTime": "2026-04-20T09:00:00.000Z",
+#       "status": "ACCEPTED",
+#       "doctor": {
+#         "id": "0e1c4466-fa7c-4d16-b38c-79990260348b",
+#         "specialization": "NEUROLOGIST",
+#         "user": {
+#           "id": "6ee63987-4566-4364-bf3f-71f5ef36ae9f",
+#           "name": "Dr Ahmed",
+#           "email": "doctor@test.com",
+#           "password": "$2b$10$kxf6oiIwzmGrMDcpw/GDTeXuq6u2OyM3p304lweASzkz1oWqWxZx.",
+#           "role": "DOCTOR",
+#           "createdAt": "2026-04-18T16:14:26.813Z",
+#           "updatedAt": "2026-04-18T16:14:26.813Z"
+#         }
+#       }
+#     }
+#   }
+# ]
 
 ### SPENDING
 GET {{baseUrl}}/patient/dashboard/spending
 Authorization: Bearer {{patientToken}}
+
+# Response
+# {
+#   "totalSpent": 75,
+#   "totalPayments": 1
+# }

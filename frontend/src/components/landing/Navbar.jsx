@@ -22,6 +22,7 @@ const Navbar = () => {
     if (path.startsWith("/patient")) {
       return [
         { name: "Dashboard", href: "/patient/dashboard" },
+        { name: "Find Doctors", href: "/patient/doctors" },
         { name: "Appointments", href: "/patient/appointments" },
         { name: "Medical Records", href: "/patient/records" },
         { name: "Profile", href: "/patient/profile" },
