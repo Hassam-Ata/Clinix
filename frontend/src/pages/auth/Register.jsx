@@ -38,7 +38,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+    <div className="flex-1 bg-background flex flex-col items-center justify-center p-4 py-12">
       <div className="w-full max-w-md space-y-8 bg-card p-8 rounded-2xl border shadow-xl animate-fade-in">
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4 text-primary">

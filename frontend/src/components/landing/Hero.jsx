@@ -26,7 +26,7 @@ const Hero = () => {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           <Link to="/register">
-            <Button size="lg" className="h-12 px-8 text-base bg-orange-500 hover:bg-orange-600 text-white font-semibold">
+            <Button size="lg" className="h-12 px-8 text-base font-semibold">
               Get Started
             </Button>
           </Link>
@@ -36,7 +36,7 @@ const Hero = () => {
         </div>
 
         {/* Visual/Video Placeholder */}
-        <div className="relative max-w-5xl mx-auto rounded-2xl border bg-card/50 backdrop-blur-sm overflow-hidden shadow-2xl">
+        {/* <div className="relative max-w-5xl mx-auto rounded-2xl border bg-card/50 backdrop-blur-sm overflow-hidden shadow-2xl">
           <div className="aspect-video bg-muted flex items-center justify-center">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
                <Play className="h-10 w-10 text-primary" />
@@ -47,7 +47,7 @@ const Hero = () => {
               className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay"
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
