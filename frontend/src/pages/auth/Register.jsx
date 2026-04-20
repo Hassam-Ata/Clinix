@@ -142,7 +142,7 @@ const Register = () => {
 
           <Button 
             type="submit" 
-            className="w-full h-11 text-base bg-orange-500 hover:bg-orange-600 text-white font-bold"
+            className="w-full h-11"
             disabled={isPending}
           >
             {isPending ? "Creating account..." : "Sign Up"}
