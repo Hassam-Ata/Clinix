@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { DoctorStatus, Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -38,6 +39,17 @@ export class AuthService {
         role: dto.role,
       },
     });
+
+    // If the user is a doctor, create a skeleton doctor record
+    if (user.role === Role.DOCTOR) {
+      await this.prisma.doctor.create({
+        data: {
+          userId: user.id,
+          status: DoctorStatus.PENDING,
+          fees: 0,
+        },
+      });
+    }
 
     return {
       message: 'User registered successfully',
@@ -77,7 +89,10 @@ export class AuthService {
   async validate(token: string) {
     try {
       const decoded = await this.jwt.verify(token);
-      return { role: decoded.role };
+      return {
+        id: decoded.id,
+        role: decoded.role,
+      };
     } catch (error: any) {
       throw new UnauthorizedException(error.message);
     }

@@ -1,4 +1,8 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
@@ -14,13 +18,19 @@ export class DoctorService {
       where: { userId },
     });
 
-    if (existing) {
-      throw new ForbiddenException('Doctor profile already exists');
+    if (!existing) {
+      throw new NotFoundException(
+        'Doctor record not found. Please register first.',
+      );
     }
 
-    return this.prisma.doctor.create({
+    if (existing.specialization) {
+      throw new ForbiddenException('Doctor profile has already been onboarded');
+    }
+
+    return this.prisma.doctor.update({
+      where: { userId },
       data: {
-        userId,
         specialization: dto.specialization,
         fees: dto.fees,
         documentUrl: dto.documentUrl,

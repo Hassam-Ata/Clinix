@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Activity, Lock, Mail } from "lucide-react";
 import { loginSchema } from "@/schemas/authSchema";
-import { useLogin, useValidateToken } from "@/hooks/useAuth";
+import { useLogin } from "@/hooks/useAuth";
 
 const Login = () => {
   const { mutate: login, isPending } = useLogin();
-  const { mutate: validateToken } = useValidateToken();
 
   const {
     register,
@@ -23,13 +22,6 @@ const Login = () => {
       password: "",
     },
   });
-
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      validateToken(token);
-    }
-  }, [validateToken]);
 
   const onSubmit = (data) => {
     login(data);

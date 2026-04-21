@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { User, Mail, Briefcase, DollarSign, Calendar, Clock, AlertCircle, CheckCircle2 } from "lucide-react";
+import { data } from "react-router";
 
 const DoctorDashboard = () => {
   const { data: doctor, isLoading, error } = useDoctorProfile();
+  console.log(doctor)
 
   if (isLoading) {
     return (

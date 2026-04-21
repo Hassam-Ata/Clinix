@@ -3,6 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import api from "@/api/axios";
 
+const getDashboardPath = (role) => {
+  if (role === "DOCTOR") {
+    return "/doctor/dashboard";
+  }
+
+  if (role === "PATIENT") {
+    return "/patient/dashboard";
+  }
+
+  if (role === "ADMIN") {
+    return "/admin/dashboard";
+  }
+
+  return "/";
+};
+
 export const useRegister = () => {
   const navigate = useNavigate();
 
@@ -38,15 +54,7 @@ export const useLogin = () => {
       toast.success("Login successful!");
       
       // Redirect based on role
-      if (data.role === "DOCTOR") {
-        navigate("/doctor/dashboard");
-      } else if (data.role === "PATIENT") {
-        navigate("/patient/dashboard");
-      } else if (data.role === "ADMIN") {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/");
-      }
+      navigate(getDashboardPath(data.role));
     },
     onError: (error) => {
       const message = error.response?.data?.message || "Login failed. Please check your credentials.";
@@ -68,13 +76,7 @@ export const useValidateToken = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      if (data.role === "DOCTOR") {
-        navigate("/doctor/dashboard");
-      } else if (data.role === "PATIENT") {
-        navigate("/patient/dashboard");
-      } else if (data.role === "ADMIN") {
-        navigate("/admin/dashboard");
-      }
+      navigate(getDashboardPath(data.role));
     },
     onError: () => {
       // If token is invalid, clear it

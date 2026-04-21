@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Doctor" ALTER COLUMN "fees" DROP NOT NULL,
+ALTER COLUMN "documentUrl" DROP NOT NULL,
+ALTER COLUMN "specialization" DROP NOT NULL;

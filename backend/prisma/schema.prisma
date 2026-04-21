@@ -64,9 +64,9 @@ model Doctor {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
-  specialization DoctorSpecialization
+  specialization DoctorSpecialization?
   fees           Float
-  documentUrl    String
+  documentUrl    String?
 
   status DoctorStatus @default(PENDING)
 
