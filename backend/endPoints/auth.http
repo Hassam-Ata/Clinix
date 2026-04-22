@@ -26,8 +26,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
 
 {
-  "email": "ali@test.com",
-  "password": "password123"
+  "email": "hassamata2@gmail.com",
+  "password": "123456"
 }
 
 

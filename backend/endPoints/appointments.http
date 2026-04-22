@@ -4,10 +4,10 @@
 @baseUrl = http://localhost:3000
 @contentType = application/json
 
-@patientToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA0ZDU5YzVlLTBkNzEtNGJlYS1hY2MyLTM1OTQ4MGRmOTQwNSIsInJvbGUiOiJQQVRJRU5UIiwiaWF0IjoxNzc2NTQ3NTg2LCJleHAiOjE3NzcxNTIzODZ9.ZKNoDYZAALn13r8M4oPS4WXkceFqob_0oeUZyvbsLwc
+@patientToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQxMGZkN2FhLWU1YzItNGM3NS05OGU1LTNkYmVhOWFiMjFjNCIsInJvbGUiOiJQQVRJRU5UIiwiaWF0IjoxNzc2ODA0Nzc5LCJleHAiOjE3Nzc0MDk1Nzl9.YT6hPPdfEoOMOqKo3pV14N1VkaIl-oinPkutLkIx-nc
 @doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZTYzOTg3LTQ1NjYtNDM2NC1iZjNmLTcxZjVlZjM2YWU5ZiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY1NDc2MjMsImV4cCI6MTc3NzE1MjQyM30.V8LNC2qeR21zts75Gn4ATaENroSksZLtMurr9C2grsI
 
-@doctorId = 0e1c4466-fa7c-4d16-b38c-79990260348b
+@doctorId = 0e3a3db4-e98f-426a-b52f-b8ca68e74c88
 @appointmentId = 64ffb421-de2a-4c04-9ab4-7c443507e91b
 
 
@@ -20,8 +20,8 @@ Authorization: Bearer {{patientToken}}
 
 {
   "doctorId": "{{doctorId}}",
-  "startTime": "2026-04-20T09:00:00.000Z",
-  "endTime": "2026-04-20T09:30:00.000Z"
+  "startTime": 
+  "endTime": ,
 }
 
 
@@ -30,6 +30,40 @@ Authorization: Bearer {{patientToken}}
 ### =========================
 GET {{baseUrl}}/appointment/my
 Authorization: Bearer {{patientToken}}
+# Response:
+[
+  {
+    "id": "cd6bcc18-c942-4788-8c77-039799891d49",
+    "patientId": "410fd7aa-e5c2-4c75-98e5-3dbea9ab21c4",
+    "doctorId": "0e3a3db4-e98f-426a-b52f-b8ca68e74c88",
+    "status": "PENDING",
+    "startTime": "2026-04-20T02:45:00.000Z",
+    "endTime": "2026-04-20T03:45:00.000Z",
+    "meetingLink": null,
+    "createdAt": "2026-04-21T21:09:43.847Z",
+    "doctor": {
+      "id": "0e3a3db4-e98f-426a-b52f-b8ca68e74c88",
+      "userId": "3c8a5ae4-3c17-465a-aa74-97ebada8a46b",
+      "specialization": "DERMATOLOGIST",
+      "fees": 0,
+      "documentUrl": "https://www.example.com/",
+      "status": "APPROVED",
+      "rejectionReason": null,
+      "createdAt": "2026-04-21T18:08:44.872Z",
+      "updatedAt": "2026-04-21T18:08:44.872Z",
+      "user": {
+        "id": "3c8a5ae4-3c17-465a-aa74-97ebada8a46b",
+        "name": "Hassam Ata",
+        "email": "hassamata86@gmail.com",
+        "password": "$2b$10$Z5sr4Xk3WvMlRhP.Bdty3ufloOFXJnMUNpxzEMfInJslVMjp5BxJa",
+        "role": "DOCTOR",
+        "createdAt": "2026-04-21T18:08:44.632Z",
+        "updatedAt": "2026-04-21T18:08:44.632Z"
+      }
+    }
+  }
+]
+
 
 
 ### =========================
