@@ -11,9 +11,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Trash2, Plus, Calendar, Clock, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { useDoctorProfile } from "@/hooks/useDoctor";
 
 const Availability = () => {
+  const navigate = useNavigate();
+  const { data: profile } = useDoctorProfile();
+  
+  React.useEffect(() => {
+    if (profile && !profile.specialization) {
+      navigate("/doctor/onboard");
+    }
+  }, [profile, navigate]);
+
   const { data: slots, isLoading } = useDoctorAvailability();
+
   const addMutation = useAddAvailability();
   const deleteMutation = useDeleteAvailability();
 

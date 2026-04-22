@@ -4,7 +4,7 @@
 @baseUrl = http://localhost:3000
 @contentType = application/json
 
-@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNjNzdmMWEzLTJhYWMtNDE4Ni1iMTVmLWU4MDhhM2Q1NGMwMiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY3MTMwNTYsImV4cCI6MTc3NzMxNzg1Nn0.YjOEF3jn1_Q-JW1c1gLmWWOuBJ-NFhnnOYDtWe4HBqQ
+@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY4MzRiNTYzLWFmMmItNGI0Ni1hZDkwLWQ5NDcwM2RhZDMwYiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY4NDg2NDUsImV4cCI6MTc3NzQ1MzQ0NX0.czVzP-GQ9oXv1wdgdcFnUJDK6xx6vwB6glaU8KKaluc
 
 
 ### =========================
@@ -41,7 +41,23 @@ Authorization: Bearer {{doctorToken}}
   "documentUrl": "https://example.com/license.pdf"
 }
 
-
+#Responses
+# {
+#   "id": "eea769d5-7a7b-4696-b31b-f50f93a43d66",
+#   "userId": "f834b563-af2b-4b46-ad90-d94703dad30b",
+#   "specialization": "CARDIOLOGIST",
+#   "fees": 50,
+#   "documentUrl": "https://example.com/license.pdf",
+#   "status": "PENDING",
+#   "rejectionReason": null,
+#   "createdAt": "2026-04-22T09:00:15.747Z",
+#   "updatedAt": "2026-04-22T09:10:38.510Z"
+# }
+# {
+#   "message": "Doctor profile has already been onboarded",
+#   "error": "Forbidden",
+#   "statusCode": 403
+# }
 ### =========================
 ### GET ALL DOCTORS
 ### =========================

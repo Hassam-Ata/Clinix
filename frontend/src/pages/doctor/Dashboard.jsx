@@ -6,9 +6,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { User, Mail, Briefcase, DollarSign, Calendar, Clock, AlertCircle, CheckCircle2 } from "lucide-react";
 import { data } from "react-router";
 
+import { useNavigate } from "react-router-dom";
+
 const DoctorDashboard = () => {
+  const navigate = useNavigate();
   const { data: doctor, isLoading, error } = useDoctorProfile();
+  
+  React.useEffect(() => {
+    if (doctor && !doctor.specialization) {
+      navigate("/doctor/onboard");
+    }
+  }, [doctor, navigate]);
+
   console.log(doctor)
+
 
   if (isLoading) {
     return (

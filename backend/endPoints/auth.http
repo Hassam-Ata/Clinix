@@ -56,6 +56,12 @@ Content-Type: {{contentType}}
   "password": "123456"
 }
 
+# Response
+# {
+#   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY4MzRiNTYzLWFmMmItNGI0Ni1hZDkwLWQ5NDcwM2RhZDMwYiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY4NDg2NDUsImV4cCI6MTc3NzQ1MzQ0NX0.czVzP-GQ9oXv1wdgdcFnUJDK6xx6vwB6glaU8KKaluc",
+#   "role": "DOCTOR",
+#   "doctorStatus": "PENDING"
+# }
 
 ### =========================
 ### VALIDATE TOKEN

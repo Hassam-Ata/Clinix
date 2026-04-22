@@ -59,3 +59,27 @@ export const useDeleteAvailability = () => {
     },
   });
 };
+
+export const useOnboardDoctor = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data) => {
+      const response = await api.post("/doctor/onboard", data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["doctor-profile"] });
+      toast.success("Onboarding profile submitted successfully!");
+    },
+    onError: (error) => {
+      if (error.response?.status === 403) {
+        toast.info("You have already onboarded.");
+      } else {
+        const message = error.response?.data?.message || "Failed to submit onboarding profile.";
+        toast.error(message);
+      }
+    },
+  });
+};
+
