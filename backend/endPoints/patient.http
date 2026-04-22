@@ -4,7 +4,7 @@
 @baseUrl = http://localhost:3000
 @contentType = application/json
 
-@patientToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA0ZDU5YzVlLTBkNzEtNGJlYS1hY2MyLTM1OTQ4MGRmOTQwNSIsInJvbGUiOiJQQVRJRU5UIiwiaWF0IjoxNzc2NjA1Nzc3LCJleHAiOjE3NzcyMTA1Nzd9.S9IXopoJ63enOV4O3JMzd7-psLDvEErJlMJyfApe2Rk
+@patientToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQxMGZkN2FhLWU1YzItNGM3NS05OGU1LTNkYmVhOWFiMjFjNCIsInJvbGUiOiJQQVRJRU5UIiwiaWF0IjoxNzc2ODQxMDUyLCJleHAiOjE3Nzc0NDU4NTJ9.XK1CYhDUsTouVW-bfNd1ixnDxSg2X8Es_4bEN1IRtZ8
 
 
 ### =========================
