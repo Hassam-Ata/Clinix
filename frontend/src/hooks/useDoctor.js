@@ -83,3 +83,58 @@ export const useOnboardDoctor = () => {
   });
 };
 
+export const useDoctorAppointments = () => {
+  return useQuery({
+    queryKey: ["doctor-appointments"],
+    queryFn: async () => {
+      const response = await api.get("/appointment/doctor");
+      return response.data;
+    },
+  });
+};
+
+export const useUpdateAppointmentStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ appointmentId, status, meetingLink }) => {
+      const response = await api.patch(`/appointment/${appointmentId}/status`, {
+        status,
+        ...(meetingLink ? { meetingLink } : {}),
+      });
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["doctor-appointments"] });
+      if (variables.status === "ACCEPTED") {
+        toast.success("Appointment accepted.");
+      } else {
+        toast.success("Appointment rejected.");
+      }
+    },
+    onError: (error) => {
+      const message = error.response?.data?.message || "Failed to update appointment status.";
+      toast.error(message);
+    },
+  });
+};
+
+export const useCompleteAppointment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (appointmentId) => {
+      const response = await api.patch(`/appointment/${appointmentId}/complete`, {});
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["doctor-appointments"] });
+      toast.success("Appointment marked as completed.");
+    },
+    onError: (error) => {
+      const message = error.response?.data?.message || "Failed to complete appointment.";
+      toast.error(message);
+    },
+  });
+};
+

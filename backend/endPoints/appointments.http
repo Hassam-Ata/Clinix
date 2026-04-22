@@ -5,7 +5,7 @@
 @contentType = application/json
 
 @patientToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQxMGZkN2FhLWU1YzItNGM3NS05OGU1LTNkYmVhOWFiMjFjNCIsInJvbGUiOiJQQVRJRU5UIiwiaWF0IjoxNzc2ODA0Nzc5LCJleHAiOjE3Nzc0MDk1Nzl9.YT6hPPdfEoOMOqKo3pV14N1VkaIl-oinPkutLkIx-nc
-@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlZTYzOTg3LTQ1NjYtNDM2NC1iZjNmLTcxZjVlZjM2YWU5ZiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY1NDc2MjMsImV4cCI6MTc3NzE1MjQyM30.V8LNC2qeR21zts75Gn4ATaENroSksZLtMurr9C2grsI
+@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNjOGE1YWU0LTNjMTctNDY1YS1hYTc0LTk3ZWJhZGE4YTQ2YiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY4Nzk5MDcsImV4cCI6MTc3NzQ4NDcwN30.rJ8x8tNLmGWFXSEjcyGbsahquwbg1W5iH96Y7dwbtmE
 
 @doctorId = 0e3a3db4-e98f-426a-b52f-b8ca68e74c88
 @appointmentId = 64ffb421-de2a-4c04-9ab4-7c443507e91b
@@ -71,6 +71,47 @@ Authorization: Bearer {{patientToken}}
 ### =========================
 GET {{baseUrl}}/appointment/doctor
 Authorization: Bearer {{doctorToken}}
+#Response
+# [
+#   {
+#     "id": "730a8f91-f7b9-412d-b7f9-70bfa88c51de",
+#     "patientId": "410fd7aa-e5c2-4c75-98e5-3dbea9ab21c4",
+#     "doctorId": "0e3a3db4-e98f-426a-b52f-b8ca68e74c88",
+#     "status": "CANCELLED",
+#     "startTime": "2026-04-20T03:46:00.000Z",
+#     "endTime": "2026-04-20T04:45:00.000Z",
+#     "meetingLink": null,
+#     "createdAt": "2026-04-21T21:28:29.949Z",
+#     "patient": {
+#       "id": "410fd7aa-e5c2-4c75-98e5-3dbea9ab21c4",
+#       "name": "Hassam Ata",
+#       "email": "hassamata2@gmail.com",
+#       "password": "$2b$10$wliIrfoAqPl4KVOhEJTgyeL9lgBXOkqyKwD3BQucDNyf0TWkRBeOq",
+#       "role": "PATIENT",
+#       "createdAt": "2026-04-21T20:25:59.431Z",
+#       "updatedAt": "2026-04-21T20:25:59.431Z"
+#     }
+#   },
+#   {
+#     "id": "cd6bcc18-c942-4788-8c77-039799891d49",
+#     "patientId": "410fd7aa-e5c2-4c75-98e5-3dbea9ab21c4",
+#     "doctorId": "0e3a3db4-e98f-426a-b52f-b8ca68e74c88",
+#     "status": "CANCELLED",
+#     "startTime": "2026-04-20T02:45:00.000Z",
+#     "endTime": "2026-04-20T03:45:00.000Z",
+#     "meetingLink": null,
+#     "createdAt": "2026-04-21T21:09:43.847Z",
+#     "patient": {
+#       "id": "410fd7aa-e5c2-4c75-98e5-3dbea9ab21c4",
+#       "name": "Hassam Ata",
+#       "email": "hassamata2@gmail.com",
+#       "password": "$2b$10$wliIrfoAqPl4KVOhEJTgyeL9lgBXOkqyKwD3BQucDNyf0TWkRBeOq",
+#       "role": "PATIENT",
+#       "createdAt": "2026-04-21T20:25:59.431Z",
+#       "updatedAt": "2026-04-21T20:25:59.431Z"
+#     }
+#   }
+# ]
 
 
 ### =========================

@@ -52,7 +52,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
 
 {
-  "email": "doctor@test.com",
+  "email": "hassamata86@gmail.com",
   "password": "123456"
 }
 

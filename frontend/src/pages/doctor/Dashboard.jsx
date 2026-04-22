@@ -149,7 +149,7 @@ const DoctorDashboard = () => {
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Consultation Fees</span>
                   <div className="flex items-center gap-3 text-2xl font-bold text-primary">
                     <DollarSign className="h-5 w-5" />
-                    ${doctor.fees}
+                    {doctor.fees}
                   </div>
                 </div>
 

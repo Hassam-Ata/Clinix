@@ -4,7 +4,7 @@
 @baseUrl = http://localhost:3000
 @contentType = application/json
 
-@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY4MzRiNTYzLWFmMmItNGI0Ni1hZDkwLWQ5NDcwM2RhZDMwYiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY4NDg2NDUsImV4cCI6MTc3NzQ1MzQ0NX0.czVzP-GQ9oXv1wdgdcFnUJDK6xx6vwB6glaU8KKaluc
+@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNjOGE1YWU0LTNjMTctNDY1YS1hYTc0LTk3ZWJhZGE4YTQ2YiIsInJvbGUiOiJET0NUT1IiLCJpYXQiOjE3NzY4Nzk5MDcsImV4cCI6MTc3NzQ4NDcwN30.rJ8x8tNLmGWFXSEjcyGbsahquwbg1W5iH96Y7dwbtmE
 
 
 ### =========================
@@ -68,6 +68,16 @@ GET {{baseUrl}}/doctor/all
 GET {{baseUrl}}/doctor/dashboard/summary
 Authorization: Bearer {{doctorToken}}
 
+#Response
+# {
+#   "totalAppointments": 0,
+#   "completedAppointments": 0,
+#   "pendingAppointments": 0,
+#   "acceptedAppointments": 0,
+#   "rejectedAppointments": 0,
+#   "totalEarnings": 0
+# }
+
 ### TODAY
 GET {{baseUrl}}/doctor/dashboard/today
 Authorization: Bearer {{doctorToken}}
@@ -83,3 +93,9 @@ Authorization: Bearer {{doctorToken}}
 ### EARNINGS
 GET {{baseUrl}}/doctor/dashboard/earnings
 Authorization: Bearer {{doctorToken}}
+#Response
+# {
+#   "total": 0,
+#   "platformCut": 0,
+#   "doctorEarnings": 0
+# }
