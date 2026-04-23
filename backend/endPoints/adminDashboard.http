@@ -4,48 +4,68 @@
 @baseUrl = http://localhost:3000
 @contentType = application/json
 
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZlODhiYmFjLTRhOTAtNDg1Yy1iODdmLTNiOTBlNGFiMjlhMiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3NjYwNzMxMiwiZXhwIjoxNzc3MjEyMTEyfQ.tL5WvhpUic_EGV0Qt-WUVnpCr84FYBj1xR-TO6FkhxE
-
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgyMDI0MzRjLTJjYWEtNDlkMC1hZTVhLWUxYzlkOTRiMzkwYSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3Njk1NzM2NiwiZXhwIjoxNzc3NTYyMTY2fQ.wLmSF0byIjJx5ZddphF8piz50bShDX7sbYSWAeOJrTA
 
 ### =========================
 ### ADD ADMIN
 ### =========================
-POST {{baseUrl}}/auth/register
-Content-Type: {{contentType}}
-
-{
-  "name": "batman",
-  "email": "batman30@gmail.com",
-  "password": "batman123",
-  "role": "PATIENT"
-}
 
 ### GET ADMIN TOKEN
 POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
 
 {
-  "email": "batman30@gmail.com",
-  "password": "batman123"
+  "email": "eren23@gmail.com",
+  "password": "123456"
 }
 
 
 ### OVERVIEW
 GET http://localhost:3000/admin/dashboard/overview
 Authorization: Bearer {{adminToken}}
-
+#response
+# {
+#   "totalUsers": 5,
+#   "totalDoctors": 2,
+#   "totalPatients": 2,
+#   "totalAppointments": 1
+# }
 ### DOCTORS
 GET http://localhost:3000/admin/dashboard/doctors
 Authorization: Bearer {{adminToken}}
+#Response
+# {
+#   "pending": 1,
+#   "approved": 1,
+#   "rejected": 0
+# }
 
 ### APPOINTMENTS
 GET http://localhost:3000/admin/dashboard/appointments
 Authorization: Bearer {{adminToken}}
+#Response
+# {
+#   "pending": 0,
+#   "accepted": 0,
+#   "rejected": 0,
+#   "completed": 1
+# }
 
 ### PAYMENTS
 GET http://localhost:3000/admin/dashboard/payments
 Authorization: Bearer {{adminToken}}
+#Response
+# {
+#   "pending": 0,
+#   "paid": 1,
+#   "failed": 0
+# }
 
 ### REVENUE
 GET http://localhost:3000/admin/dashboard/revenue
 Authorization: Bearer {{adminToken}}
+# {
+#   "totalRevenue": 50,
+#   "platformCut": 10,
+#   "doctorPayouts": 40
+# }

@@ -14,6 +14,9 @@ import PatientDashboard from "./pages/patient/Dashboard";
 import PatientDoctors from "./pages/patient/Doctors";
 import PatientAppointments from "./pages/patient/Appointments";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminDoctors from "./pages/admin/Doctors";
+import AdminAppointments from "./pages/admin/Appointments";
+import AdminPayments from "./pages/admin/Payments";
 import { useValidateToken } from "./hooks/useAuth";
 
 const AuthBootstrap = () => {
@@ -53,6 +56,9 @@ const App = () => {
             <Route path="/patient/doctors" element={<PatientDoctors />} />
             <Route path="/patient/appointments" element={<PatientAppointments />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/doctors" element={<AdminDoctors />} />
+            <Route path="/admin/appointments" element={<AdminAppointments />} />
+            <Route path="/admin/payments" element={<AdminPayments />} />
           </Route>
         </Routes>
       </BrowserRouter>

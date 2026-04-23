@@ -38,9 +38,9 @@ const Navbar = () => {
     if (path.startsWith("/admin")) {
       return [
         { name: "Dashboard", href: "/admin/dashboard" },
-        { name: "Users", href: "/admin/users" },
-        { name: "Clinics", href: "/admin/clinics" },
-        { name: "Settings", href: "/admin/settings" },
+        { name: "Doctors", href: "/admin/doctors" },
+        { name: "Appointments", href: "/admin/appointments" },
+        { name: "Payments", href: "/admin/payments" },
       ];
     }
 

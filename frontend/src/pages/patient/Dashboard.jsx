@@ -149,7 +149,7 @@ const PatientDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-3">
+        <Card className="lg:col-span-3" size="">
           <CardHeader>
             <CardTitle>Payment Status Distribution</CardTitle>
             <CardDescription>Chart view of your payment outcomes.</CardDescription>
@@ -250,7 +250,7 @@ const MetricCard = ({ title, value, loading, isCurrency = false }) => {
       <CardHeader className="pb-2">
         <CardDescription>{title}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent >
         {loading ? (
           <Skeleton className="h-8 w-28" />
         ) : (
