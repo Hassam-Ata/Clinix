@@ -64,7 +64,7 @@ const Navbar = () => {
           : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <Activity className="h-8 w-8 text-primary" />
           <span className="text-xl font-bold tracking-tight">Clinix</span>
