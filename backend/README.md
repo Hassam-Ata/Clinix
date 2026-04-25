@@ -44,6 +44,12 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Start Stripe webhook
+
+```bash
+stripe command to listen to listen to this localhost:3000/payment/webhook
+```
+
 ## Run tests
 
 ```bash
