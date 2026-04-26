@@ -1,9 +1,8 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAdminPayments, useAdminRevenue } from "@/hooks/useAdmin";
-import { DollarSign, TrendingUp } from "lucide-react";
+import { ChartColumn, PieChart } from "lucide-react";
 
 // Skeleton Loader
 const SkeletonLoader = () => (
@@ -13,6 +12,14 @@ const SkeletonLoader = () => (
     ))}
   </div>
 );
+
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value || 0);
 
 const PaymentsPage = () => {
   const { data: paymentStats, isLoading } = useAdminPayments();
@@ -37,104 +44,90 @@ const PaymentsPage = () => {
   const totalRevenue = revenue?.totalRevenue || 0;
   const platformCut = revenue?.platformCut || 0;
   const doctorPayouts = revenue?.doctorPayouts || 0;
+  const safeTotalPayments = totalPayments || 1;
+  const maxPaymentBucket = Math.max(pendingPayments, paidPayments, failedPayments, 1);
+
+  const paymentChartData = [
+    { label: "Pending", value: pendingPayments, color: "bg-amber-500", lightBg: "bg-amber-500/15" },
+    { label: "Paid", value: paidPayments, color: "bg-emerald-500", lightBg: "bg-emerald-500/15" },
+    { label: "Failed", value: failedPayments, color: "bg-rose-500", lightBg: "bg-rose-500/15" },
+  ];
+
+  const platformPercent = totalRevenue ? Math.round((platformCut / totalRevenue) * 100) : 0;
 
   return (
     <div className="flex-1 flex flex-col p-6">
-      <div className="mb-8">
+      <div className="mb-4">
         <h1 className="text-3xl font-bold">Payments</h1>
-        <p className="text-muted-foreground">Track payment status breakdown and platform revenue</p>
+        <p className="text-muted-foreground">Visual analytics for payment status and revenue distribution</p>
       </div>
 
-      {/* Revenue Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
-              Total Revenue
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ChartColumn className="h-4 w-4" />
+              Payment Status Chart
             </CardTitle>
+            <CardDescription>{totalPayments} total payment records, grouped by status.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">${(totalRevenue / 100).toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground mt-1">PAID payments only</p>
+            <div className="space-y-4">
+              {paymentChartData.map((item) => {
+                const width = (item.value / maxPaymentBucket) * 100;
+                const share = Math.round((item.value / safeTotalPayments) * 100);
+
+                return (
+                  <div key={item.label}>
+                    <div className="mb-1 flex items-center justify-between text-sm">
+                      <span className="font-medium">{item.label}</span>
+                      <span className="text-muted-foreground">{item.value} ({share}%)</span>
+                    </div>
+                    <div className={`h-3 w-full overflow-hidden rounded-full ${item.lightBg}`}>
+                      <div className={`h-full rounded-full ${item.color}`} style={{ width: `${width}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Platform Cut
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <PieChart className="h-4 w-4" />
+              Revenue Split
             </CardTitle>
+            <CardDescription>Platform share vs doctor payout from paid payment revenue.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">${(platformCut / 100).toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground mt-1">20% of collected revenue</p>
-          </CardContent>
-        </Card>
+            <div className="flex items-center gap-6">
+              <div
+                className="relative h-36 w-36 rounded-full"
+                style={{
+                  background: `conic-gradient(rgb(59 130 246) ${platformPercent}%, rgb(16 185 129) 0%)`,
+                }}
+                aria-label="Revenue split chart"
+              >
+                <div className="absolute inset-5 rounded-full bg-background" />
+              </div>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Doctor Payouts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">${(doctorPayouts / 100).toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground mt-1">80% of collected revenue</p>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <p className="font-medium text-blue-600">Platform Cut ({platformPercent}%)</p>
+                  <p className="text-muted-foreground">{formatCurrency(platformCut)}</p>
+                </div>
+                <div>
+                  <p className="font-medium text-emerald-600">Doctor Payouts ({100 - platformPercent}%)</p>
+                  <p className="text-muted-foreground">{formatCurrency(doctorPayouts)}</p>
+                </div>
+                <p className="text-xs text-muted-foreground">Total revenue: {formatCurrency(totalRevenue)}</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Pending Payments</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{pendingPayments}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Paid Payments</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{paidPayments}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Failed Payments</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{failedPayments}</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Payment Summary</CardTitle>
-          <CardDescription>{totalPayments} total payment records returned by the admin dashboard endpoint</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-lg border border-border bg-muted/40 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Pending</p>
-              <p className="mt-2 text-2xl font-bold">{pendingPayments}</p>
-            </div>
-            <div className="rounded-lg border border-border bg-muted/40 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Paid</p>
-              <p className="mt-2 text-2xl font-bold">{paidPayments}</p>
-            </div>
-            <div className="rounded-lg border border-border bg-muted/40 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Failed</p>
-              <p className="mt-2 text-2xl font-bold">{failedPayments}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

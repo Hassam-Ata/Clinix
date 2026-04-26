@@ -55,7 +55,7 @@ const AdminDashboard = () => {
     },
     {
       title: "Total Revenue",
-      value: revenue?.totalRevenue ? `$${(revenue.totalRevenue / 100).toFixed(2)}` : "$0.00",
+      value: revenue?.totalRevenue ? `$${(revenue.totalRevenue)}` : "$0.00",
       icon: DollarSign,
       description: "Platform earnings",
     },
