@@ -23,6 +23,10 @@ const FAQ = () => {
       question: "Is the video consultation secure?",
       answer: "Yes, every accepted appointment generates a unique, secure meeting link. All platform interactions are encrypted to protect patient and provider privacy.",
     },
+    {
+      question: "Is the video consultation secure and good?",
+      answer: "Yes, every accepted appointment generates a unique, secure meeting link. All platform interactions are encrypted to protect patient and provider privacy.",
+    },
   ];
 
   return (
