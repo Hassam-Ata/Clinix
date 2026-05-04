@@ -14,6 +14,31 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useDoctorProfile } from "@/hooks/useDoctor";
 
+const weekdayIndex = {
+  SUNDAY: 0,
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
+  SATURDAY: 6,
+};
+
+const buildTimestampForWeekday = (day, time) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  const today = new Date();
+  const currentWeekStart = new Date(today);
+
+  currentWeekStart.setHours(0, 0, 0, 0);
+  currentWeekStart.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+
+  const slotDate = new Date(currentWeekStart);
+  slotDate.setDate(currentWeekStart.getDate() + (weekdayIndex[day] ?? 0));
+  slotDate.setHours(hours, minutes, 0, 0);
+
+  return slotDate.toISOString();
+};
+
 const Availability = () => {
   const navigate = useNavigate();
   const { data: profile } = useDoctorProfile();
@@ -38,16 +63,8 @@ const Availability = () => {
   });
 
   const onSubmit = (data) => {
-    // We need to format the time into ISO string as the API expects
-    // The API examples show: "2026-04-21T09:00:00.000Z"
-    // Since we only have time and day, we'll use a dummy date for the year/month/day
-    // but the backend might expect specific formatting. 
-    // Looking at the user's request: "2026-04-21T09:00:00.000Z"
-    
-    // For simplicity, we'll combine a base date with the selected time
-    const baseDate = "2026-04-20"; // Just a reference date
-    const startTimeISO = new Date(`${baseDate}T${data.startTime}:00Z`).toISOString();
-    const endTimeISO = new Date(`${baseDate}T${data.endTime}:00Z`).toISOString();
+    const startTimeISO = buildTimestampForWeekday(data.day, data.startTime);
+    const endTimeISO = buildTimestampForWeekday(data.day, data.endTime);
 
     addMutation.mutate({
       day: data.day,
